@@ -774,8 +774,8 @@ export default function App() {
                             </div>
 
                             {formData.workflow.map((block, index) => (
-                                <div 
-                                    key={block.id} 
+                                <div
+                                    key={block.id}
                                     className="bg-white dark:bg-zinc-900 border-2 border-black dark:border-white p-4 relative shadow-[4px_4px_0px_0px_#ccc] dark:shadow-[4px_4px_0px_0px_#444] transition-all group"
                                     draggable
                                     onDragStart={(e) => {
@@ -853,7 +853,7 @@ export default function App() {
                             </button>
                         </div>
 
-                        </div>
+
 
                         <div className="flex justify-end gap-3 pt-4 border-t-2 border-gray-200 dark:border-zinc-700">
                             <NeoButton onClick={() => setIsModalOpen(false)} variant="invert">ยกเลิก</NeoButton>
@@ -861,83 +861,83 @@ export default function App() {
                         </div>
                     </form>
                 )}
-        </Modal>
+            </Modal>
 
-            {/* MODAL: Create Category */ }
-    <Modal isOpen={isCategoryModalOpen} onClose={() => setIsCategoryModalOpen(false)} title="สร้างหมวดหมู่ใหม่">
-        <form onSubmit={handleCreateCategory} className="space-y-6">
-            <div><label className="block font-bold mb-2 text-sm uppercase font-display dark:text-white">ชื่อหมวดหมู่</label><input required name="catName" className="w-full neo-input" placeholder="เช่น การเงิน, สุขภาพ, ออกแบบ..." /></div>
-            <div>
-                <label className="block font-bold mb-2 text-sm uppercase font-display dark:text-white">เลือกไอคอน</label>
-                <div className="grid grid-cols-10 gap-1 h-40 overflow-y-auto border-2 border-black dark:border-white p-2">
-                    {Object.keys(ICON_MAP).map((iconKey) => {
-                        const IconComp = ICON_MAP[iconKey];
-                        return (
-                            <label key={iconKey} className="cursor-pointer">
-                                <input type="radio" name="iconSelect" value={iconKey} className="peer sr-only" required defaultChecked={iconKey === 'Star'} />
-                                <div className="w-full aspect-square border-2 border-transparent peer-checked:border-black dark:peer-checked:border-white peer-checked:bg-yellow-300 dark:peer-checked:bg-yellow-600 dark:peer-checked:text-white peer-hover:bg-gray-100 dark:peer-hover:bg-zinc-800 dark:text-white flex items-center justify-center transition-all"><IconComp size={18} /></div>
-                            </label>
-                        )
-                    })}
-                </div>
-            </div>
-            <div className="flex justify-end gap-3 pt-4 border-t-2 border-gray-200 dark:border-zinc-700"><NeoButton onClick={() => setIsCategoryModalOpen(false)} variant="invert">ยกเลิก</NeoButton><NeoButton type="submit" variant="invert" icon={Plus}>สร้างหมวดหมู่</NeoButton></div>
-        </form>
-    </Modal>
-
-    {/* MODAL: Variable Runner */ }
-    <Modal isOpen={variableModal.isOpen} onClose={() => setVariableModal({ isOpen: false, prompt: null })} title="รันคำสั่ง (Workflow)">
-        <div className="flex flex-col md:flex-row gap-6 h-full">
-            {/* Left: Inputs & Guide */}
-            {((uniqueVariables.length > 0) || variableModal.prompt?.guideText) ? (
-                <div className="flex-1 space-y-4 overflow-y-auto">
-                    {/* Guide Box */}
-                    {variableModal.prompt?.guideText && (
-                        <div className="bg-yellow-50 dark:bg-yellow-900/30 border-2 border-black dark:border-white p-4 shadow-[4px_4px_0px_0px_#000] dark:shadow-[4px_4px_0px_0px_#fff]">
-                            <h4 className="font-bold text-sm mb-2 flex items-center gap-2 dark:text-white"><BookOpen size={16} /> คำแนะนำ</h4>
-                            <p className="text-sm whitespace-pre-wrap dark:text-gray-200">{variableModal.prompt.guideText}</p>
+            {/* MODAL: Create Category */}
+            <Modal isOpen={isCategoryModalOpen} onClose={() => setIsCategoryModalOpen(false)} title="สร้างหมวดหมู่ใหม่">
+                <form onSubmit={handleCreateCategory} className="space-y-6">
+                    <div><label className="block font-bold mb-2 text-sm uppercase font-display dark:text-white">ชื่อหมวดหมู่</label><input required name="catName" className="w-full neo-input" placeholder="เช่น การเงิน, สุขภาพ, ออกแบบ..." /></div>
+                    <div>
+                        <label className="block font-bold mb-2 text-sm uppercase font-display dark:text-white">เลือกไอคอน</label>
+                        <div className="grid grid-cols-10 gap-1 h-40 overflow-y-auto border-2 border-black dark:border-white p-2">
+                            {Object.keys(ICON_MAP).map((iconKey) => {
+                                const IconComp = ICON_MAP[iconKey];
+                                return (
+                                    <label key={iconKey} className="cursor-pointer">
+                                        <input type="radio" name="iconSelect" value={iconKey} className="peer sr-only" required defaultChecked={iconKey === 'Star'} />
+                                        <div className="w-full aspect-square border-2 border-transparent peer-checked:border-black dark:peer-checked:border-white peer-checked:bg-yellow-300 dark:peer-checked:bg-yellow-600 dark:peer-checked:text-white peer-hover:bg-gray-100 dark:peer-hover:bg-zinc-800 dark:text-white flex items-center justify-center transition-all"><IconComp size={18} /></div>
+                                    </label>
+                                )
+                            })}
                         </div>
-                    )}
-
-                    {uniqueVariables.length > 0 && (
-                        <div className="bg-cyan-100 dark:bg-cyan-900/30 border-2 border-black dark:border-white p-3 mb-4">
-                            <h4 className="font-bold text-sm mb-1 font-display dark:text-cyan-100">ตัวแปร (กรอกครั้งเดียวใช้ได้ทั้งหมด)</h4>
-                            <p className="text-xs dark:text-cyan-200">กรอกข้อมูลลงในตัวแปรด้านล่างเพื่อสร้าง Prompt ที่สมบูรณ์</p>
-                        </div>
-                    )}
-                    {uniqueVariables.map(v => (
-                        <div key={v}>
-                            <label className="block font-bold mb-1 text-xs uppercase bg-black text-white inline-block px-1 font-display dark:bg-white dark:text-black">{v}</label>
-                            <input className="w-full neo-input" placeholder={`ใส่ค่าสำหรับ ${v}...`} onChange={(e) => setRunnerInputs(prev => ({ ...prev, [v]: e.target.value }))} />
-                        </div>
-                    ))}
-                </div>
-            ) : null}
-
-            {/* Right: Outputs */}
-            <div className="flex-1 flex flex-col gap-4 overflow-y-auto">
-                {variableModal.prompt?.workflow?.map((block, idx) => (
-                    <div key={block.id || idx} className="flex-1 flex flex-col">
-                        {variableModal.prompt.workflow.length > 1 && (
-                            <label className="block font-bold mb-1 text-sm uppercase font-display flex items-center gap-2 dark:text-white">
-                                <span className="bg-black text-white px-1.5 py-0.5 rounded-full dark:bg-white dark:text-black text-[10px]">{idx + 1}</span>
-                                {block.title || `ขั้นตอนที่ ${idx + 1}`}
-                            </label>
-                        )}
-                        <div className="flex-1 bg-gray-900 text-green-400 p-4 border-3 border-black dark:border-white overflow-y-auto text-sm whitespace-pre-wrap relative shadow-[4px_4px_0px_0px_#ccc] dark:shadow-[4px_4px_0px_0px_#444] font-mono min-h-[120px]">
-                            {getProcessedContent(block.content)}
-                        </div>
-                        <button
-                            onClick={() => handleCopy(getProcessedContent(block.content))}
-                            className="mt-2 w-full bg-white text-black border-2 border-black dark:border-white font-bold py-2 hover:bg-black hover:text-white shadow-[2px_2px_0px_0px_#000] dark:shadow-[2px_2px_0px_0px_#fff] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center gap-2 text-sm font-display relative overflow-hidden dark:bg-zinc-800 dark:text-white dark:hover:bg-white dark:hover:text-black"
-                        >
-                            <Copy size={16} /> คัดลอก {variableModal.prompt.workflow.length > 1 && (block.title ? `"${block.title}"` : 'คำสั่ง')}
-                        </button>
                     </div>
-                ))}
-            </div>
-        </div>
-    </Modal>
+                    <div className="flex justify-end gap-3 pt-4 border-t-2 border-gray-200 dark:border-zinc-700"><NeoButton onClick={() => setIsCategoryModalOpen(false)} variant="invert">ยกเลิก</NeoButton><NeoButton type="submit" variant="invert" icon={Plus}>สร้างหมวดหมู่</NeoButton></div>
+                </form>
+            </Modal>
+
+            {/* MODAL: Variable Runner */}
+            <Modal isOpen={variableModal.isOpen} onClose={() => setVariableModal({ isOpen: false, prompt: null })} title="รันคำสั่ง (Workflow)">
+                <div className="flex flex-col md:flex-row gap-6 h-full">
+                    {/* Left: Inputs & Guide */}
+                    {((uniqueVariables.length > 0) || variableModal.prompt?.guideText) ? (
+                        <div className="flex-1 space-y-4 overflow-y-auto">
+                            {/* Guide Box */}
+                            {variableModal.prompt?.guideText && (
+                                <div className="bg-yellow-50 dark:bg-yellow-900/30 border-2 border-black dark:border-white p-4 shadow-[4px_4px_0px_0px_#000] dark:shadow-[4px_4px_0px_0px_#fff]">
+                                    <h4 className="font-bold text-sm mb-2 flex items-center gap-2 dark:text-white"><BookOpen size={16} /> คำแนะนำ</h4>
+                                    <p className="text-sm whitespace-pre-wrap dark:text-gray-200">{variableModal.prompt.guideText}</p>
+                                </div>
+                            )}
+
+                            {uniqueVariables.length > 0 && (
+                                <div className="bg-cyan-100 dark:bg-cyan-900/30 border-2 border-black dark:border-white p-3 mb-4">
+                                    <h4 className="font-bold text-sm mb-1 font-display dark:text-cyan-100">ตัวแปร (กรอกครั้งเดียวใช้ได้ทั้งหมด)</h4>
+                                    <p className="text-xs dark:text-cyan-200">กรอกข้อมูลลงในตัวแปรด้านล่างเพื่อสร้าง Prompt ที่สมบูรณ์</p>
+                                </div>
+                            )}
+                            {uniqueVariables.map(v => (
+                                <div key={v}>
+                                    <label className="block font-bold mb-1 text-xs uppercase bg-black text-white inline-block px-1 font-display dark:bg-white dark:text-black">{v}</label>
+                                    <input className="w-full neo-input" placeholder={`ใส่ค่าสำหรับ ${v}...`} onChange={(e) => setRunnerInputs(prev => ({ ...prev, [v]: e.target.value }))} />
+                                </div>
+                            ))}
+                        </div>
+                    ) : null}
+
+                    {/* Right: Outputs */}
+                    <div className="flex-1 flex flex-col gap-4 overflow-y-auto">
+                        {variableModal.prompt?.workflow?.map((block, idx) => (
+                            <div key={block.id || idx} className="flex-1 flex flex-col">
+                                {variableModal.prompt.workflow.length > 1 && (
+                                    <label className="block font-bold mb-1 text-sm uppercase font-display flex items-center gap-2 dark:text-white">
+                                        <span className="bg-black text-white px-1.5 py-0.5 rounded-full dark:bg-white dark:text-black text-[10px]">{idx + 1}</span>
+                                        {block.title || `ขั้นตอนที่ ${idx + 1}`}
+                                    </label>
+                                )}
+                                <div className="flex-1 bg-gray-900 text-green-400 p-4 border-3 border-black dark:border-white overflow-y-auto text-sm whitespace-pre-wrap relative shadow-[4px_4px_0px_0px_#ccc] dark:shadow-[4px_4px_0px_0px_#444] font-mono min-h-[120px]">
+                                    {getProcessedContent(block.content)}
+                                </div>
+                                <button
+                                    onClick={() => handleCopy(getProcessedContent(block.content))}
+                                    className="mt-2 w-full bg-white text-black border-2 border-black dark:border-white font-bold py-2 hover:bg-black hover:text-white shadow-[2px_2px_0px_0px_#000] dark:shadow-[2px_2px_0px_0px_#fff] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center gap-2 text-sm font-display relative overflow-hidden dark:bg-zinc-800 dark:text-white dark:hover:bg-white dark:hover:text-black"
+                                >
+                                    <Copy size={16} /> คัดลอก {variableModal.prompt.workflow.length > 1 && (block.title ? `"${block.title}"` : 'คำสั่ง')}
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </Modal>
 
         </div >
     );
