@@ -76,11 +76,9 @@ export default function App() {
     // Auth
     useEffect(() => {
         const initAuth = async () => {
-            // Check for custom token passed via global variable (legacy) or just init anon
+            // Check for custom token passed via global variable (legacy)
             if (typeof window !== 'undefined' && window.__initial_auth_token) {
                 await signInWithCustomToken(auth, window.__initial_auth_token);
-            } else {
-                await signInAnonymously(auth);
             }
         };
         initAuth();
