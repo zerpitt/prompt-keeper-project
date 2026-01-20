@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
     Plus, Search, Copy, Heart, Trash2, Edit2, Play,
     LogOut, User, X, Check, Terminal,
@@ -40,7 +40,6 @@ export default function App() {
     const [showFavorites, setShowFavorites] = useState(false);
     const [isTagMenuOpen, setIsTagMenuOpen] = useState(false);
     const [selectedTag, setSelectedTag] = useState(null);
-    const [selectedTag, setSelectedTag] = useState(null);
     const [toast, setToast] = useState(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -71,6 +70,19 @@ export default function App() {
         guideText: '',
         workflow: [] // Array of { id, title, content }
     });
+
+    // Drag & Drop Refs
+    const dragItem = useRef(null);
+    const dragOverItem = useRef(null);
+
+    const handleSort = () => {
+        let _workflow = [...formData.workflow];
+        const draggedItemContent = _workflow.splice(dragItem.current, 1)[0];
+        _workflow.splice(dragOverItem.current, 0, draggedItemContent);
+        dragItem.current = null;
+        dragOverItem.current = null;
+        setFormData({ ...formData, workflow: _workflow });
+    };
 
     // Image State
     const [imagePreview, setImagePreview] = useState(null);
@@ -762,7 +774,26 @@ export default function App() {
                             </div>
 
                             {formData.workflow.map((block, index) => (
-                                <div key={block.id} className="bg-white dark:bg-zinc-900 border-2 border-black dark:border-white p-4 relative shadow-[4px_4px_0px_0px_#ccc] dark:shadow-[4px_4px_0px_0px_#444]">
+                                <div 
+                                    key={block.id} 
+                                    className="bg-white dark:bg-zinc-900 border-2 border-black dark:border-white p-4 relative shadow-[4px_4px_0px_0px_#ccc] dark:shadow-[4px_4px_0px_0px_#444] transition-all group"
+                                    draggable
+                                    onDragStart={(e) => {
+                                        dragItem.current = index;
+                                        e.dataTransfer.effectAllowed = 'move';
+                                        // Visual feedback: reduce opacity
+                                        e.currentTarget.style.opacity = '0.5';
+                                    }}
+                                    onDragEnter={(e) => {
+                                        dragOverItem.current = index;
+                                        e.preventDefault();
+                                    }}
+                                    onDragOver={(e) => e.preventDefault()}
+                                    onDragEnd={(e) => {
+                                        e.currentTarget.style.opacity = '1';
+                                        handleSort();
+                                    }}
+                                >
                                     {/* Header: Title Input & Controls */}
                                     <div className="flex justify-between items-start mb-3 gap-2">
                                         <div className="flex-1">
@@ -807,7 +838,7 @@ export default function App() {
                                             placeholder="ใส่ Prompt ที่นี่..."
                                         />
                                     </div>
-                                    <div className="absolute -left-3 top-1/2 -translate-y-1/2 bg-gray-200 border border-black p-1 cursor-move hidden group-hover:block">
+                                    <div className="absolute -left-3 top-1/2 -translate-y-1/2 bg-gray-200 border border-black p-1 cursor-move hidden group-hover:block dark:bg-zinc-700 dark:border-white dark:text-white">
                                         <GripVertical size={12} />
                                     </div>
                                 </div>
