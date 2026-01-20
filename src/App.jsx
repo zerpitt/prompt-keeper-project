@@ -44,8 +44,8 @@ export default function App() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isDarkMode, setIsDarkMode] = useState(() => {
         if (typeof window !== 'undefined') {
-            return localStorage.getItem('theme') === 'dark' ||
-                (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            const savedTheme = localStorage.getItem('theme');
+            return savedTheme === 'dark';
         }
         return false;
     });
@@ -586,7 +586,7 @@ export default function App() {
                         <input type="text" placeholder="ค้นหาคำสั่ง..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full h-12 pl-12 pr-4 border-3 border-black dark:border-white font-bold focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:focus:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] transition-all outline-none font-display bg-white dark:bg-zinc-800 dark:text-white dark:placeholder-gray-500" />
                     </div>
                     <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-2 border-2 border-black dark:border-white bg-gray-50 dark:bg-zinc-800 px-2 h-12 mr-2">
+                        <div className="hidden md:flex items-center gap-2 border-2 border-black dark:border-white bg-gray-50 dark:bg-zinc-800 px-2 h-12 mr-2">
                             <span className="text-xs font-bold hidden xl:block uppercase dark:text-gray-300">เรียงตาม:</span>
                             <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="bg-transparent font-bold text-sm outline-none cursor-pointer dark:text-white dark:bg-zinc-800">
                                 <option value="createdAt">วันที่สร้าง</option>
@@ -628,43 +628,45 @@ export default function App() {
                             const displayWorkflow = prompt.workflow && prompt.workflow.length > 0 ? prompt.workflow : [{ content: prompt.content }];
 
                             return (
-                                <div key={prompt.id} className="bg-white dark:bg-zinc-900 border-3 border-black dark:border-white shadow-[6px_6px_0px_0px_#000] dark:shadow-[6px_6px_0px_0px_#fff] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#000] dark:hover:shadow-[2px_2px_0px_0px_#fff] transition-all flex flex-col h-auto min-h-[320px]">
-                                    {prompt.image && (
-                                        <div className="w-full h-40 border-b-3 border-black dark:border-white bg-gray-100 dark:bg-zinc-800 overflow-hidden relative"><img src={prompt.image} alt="cover" className="w-full h-full object-cover" /><div className="absolute top-2 right-2 bg-black text-white text-[10px] px-1 font-bold">WEBP</div></div>
-                                    )}
-                                    <div className="p-3 border-b-3 border-black dark:border-white flex justify-between items-center bg-gray-50 dark:bg-zinc-800">
-                                        <NeoBadge color={category.color}>{category.name}</NeoBadge>
-                                        <div className="flex gap-2">
-                                            <button onClick={() => toggleFavorite(prompt)} className={`hover:scale-110 transition-transform ${prompt.isFavorite ? 'text-red-500 fill-red-500' : 'text-gray-400 dark:text-zinc-500'}`}><Heart size={20} strokeWidth={3} /></button>
-                                            <button onClick={() => handleOpenEditModal(prompt)} className="hover:text-blue-600 dark:text-white dark:hover:text-blue-400"><Edit2 size={20} strokeWidth={3} /></button>
-                                            <button onClick={() => initiateDeletePrompt(prompt.id)} className="hover:text-red-600 dark:text-white dark:hover:text-red-400"><Trash2 size={20} strokeWidth={3} /></button>
+                                <div key={prompt.id} className="bg-white dark:bg-zinc-900 border-3 border-black dark:border-white shadow-[6px_6px_0px_0px_#000] dark:shadow-[6px_6px_0px_0px_#fff] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#000] dark:hover:shadow-[2px_2px_0px_0px_#fff] transition-all flex flex-col h-auto min-h-[320px] p-1">
+                                    <div className="border-2 border-black dark:border-white h-full flex flex-col relative">
+                                        {prompt.image && (
+                                            <div className="w-full h-40 border-b-3 border-black dark:border-white bg-gray-100 dark:bg-zinc-800 overflow-hidden relative"><img src={prompt.image} alt="cover" className="w-full h-full object-cover" /><div className="absolute top-2 right-2 bg-black text-white text-[10px] px-1 font-bold">WEBP</div></div>
+                                        )}
+                                        <div className="p-3 border-b-3 border-black dark:border-white flex justify-between items-center bg-gray-50 dark:bg-zinc-800">
+                                            <NeoBadge color={category.color}>{category.name}</NeoBadge>
+                                            <div className="flex gap-2">
+                                                <button onClick={() => toggleFavorite(prompt)} className={`hover:scale-110 transition-transform ${prompt.isFavorite ? 'text-red-500 fill-red-500' : 'text-gray-400 dark:text-zinc-500'}`}><Heart size={20} strokeWidth={3} /></button>
+                                                <button onClick={() => handleOpenEditModal(prompt)} className="hover:text-blue-600 dark:text-white dark:hover:text-blue-400"><Edit2 size={20} strokeWidth={3} /></button>
+                                                <button onClick={() => initiateDeletePrompt(prompt.id)} className="hover:text-red-600 dark:text-white dark:hover:text-red-400"><Trash2 size={20} strokeWidth={3} /></button>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="p-4 flex-1 overflow-hidden relative group">
-                                        <h3 className="text-xl font-black leading-tight mb-2 line-clamp-2 dark:text-white">{prompt.title}</h3>
-                                        <div className="text-xs text-gray-500 dark:text-gray-400 mb-2 flex flex-wrap gap-1">{prompt.tags?.map((tag, i) => <span key={i} className="bg-gray-200 dark:bg-zinc-700 dark:text-zinc-300 dark:border-zinc-500 px-1 border border-black rounded-none">#{tag}</span>)}</div>
+                                        <div className="p-4 flex-1 overflow-hidden relative group">
+                                            <h3 className="text-xl font-black leading-tight mb-2 line-clamp-2 dark:text-white">{prompt.title}</h3>
+                                            <div className="text-xs text-gray-500 dark:text-gray-400 mb-2 flex flex-wrap gap-1">{prompt.tags?.map((tag, i) => <span key={i} className="bg-gray-200 dark:bg-zinc-700 dark:text-zinc-300 dark:border-zinc-500 px-1 border border-black rounded-none">#{tag}</span>)}</div>
 
-                                        {/* Content Preview - Show first block or summary */}
-                                        <div className="space-y-2">
-                                            {prompt.workflow && prompt.workflow.length > 1 && (
-                                                <div className="flex items-center gap-1 text-[10px] font-bold bg-yellow-100 dark:bg-yellow-900 dark:text-yellow-100 border border-black dark:border-white px-1 w-fit">
-                                                    <Layers size={10} /> มีลำดับการทำงาน
-                                                </div>
-                                            )}
-                                            <p className="text-sm text-gray-600 dark:text-gray-400 overflow-hidden line-clamp-3 leading-relaxed font-mono">
-                                                {/* Display badge if title exists in workflow, otherwise generic */}
-                                                {prompt.workflow && prompt.workflow.length > 0 && <span className="font-bold text-xs bg-gray-200 dark:bg-zinc-700 dark:text-white px-1 mr-1">{prompt.workflow[0].title || 'Step 1'}</span>}
-                                                {prompt.content || (prompt.workflow && prompt.workflow[0]?.content)}
-                                            </p>
-                                            {/* Indicator if more steps */}
-                                            {prompt.workflow && prompt.workflow.length > 1 && (
-                                                <p className="text-xs text-blue-600 dark:text-blue-400 font-bold mt-1">+ อีก {prompt.workflow.length - 1} ขั้นตอน</p>
-                                            )}
+                                            {/* Content Preview - Show first block or summary */}
+                                            <div className="space-y-2">
+                                                {prompt.workflow && prompt.workflow.length > 1 && (
+                                                    <div className="flex items-center gap-1 text-[10px] font-bold bg-yellow-100 dark:bg-yellow-900 dark:text-yellow-100 border border-black dark:border-white px-1 w-fit">
+                                                        <Layers size={10} /> มีลำดับการทำงาน
+                                                    </div>
+                                                )}
+                                                <p className="text-sm text-gray-600 dark:text-gray-400 overflow-hidden line-clamp-3 leading-relaxed font-mono">
+                                                    {/* Display badge if title exists in workflow, otherwise generic */}
+                                                    {prompt.workflow && prompt.workflow.length > 0 && <span className="font-bold text-xs bg-gray-200 dark:bg-zinc-700 dark:text-white px-1 mr-1">{prompt.workflow[0].title || 'Step 1'}</span>}
+                                                    {prompt.content || (prompt.workflow && prompt.workflow[0]?.content)}
+                                                </p>
+                                                {/* Indicator if more steps */}
+                                                {prompt.workflow && prompt.workflow.length > 1 && (
+                                                    <p className="text-xs text-blue-600 dark:text-blue-400 font-bold mt-1">+ อีก {prompt.workflow.length - 1} ขั้นตอน</p>
+                                                )}
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="p-3 border-t-3 border-black dark:border-white grid grid-cols-2 gap-3 bg-gray-50 dark:bg-zinc-800">
-                                        <button onClick={() => handleCopy(prompt.content || (prompt.workflow && prompt.workflow[0]?.content))} className="flex items-center justify-center gap-2 font-bold text-sm border-2 border-black dark:border-white bg-white dark:bg-zinc-900 dark:text-white hover:bg-gray-100 dark:hover:bg-zinc-700 py-2 shadow-[2px_2px_0px_0px_#000] dark:shadow-[2px_2px_0px_0px_#fff] active:translate-y-[2px] active:shadow-none transition-all font-display"><Copy size={16} /> คัดลอก</button>
-                                        <button onClick={() => openRunner(prompt)} className="flex items-center justify-center gap-2 font-bold text-sm border-2 border-black dark:border-white bg-cyan-300 dark:bg-cyan-700 dark:text-white hover:bg-cyan-400 dark:hover:bg-cyan-600 py-2 shadow-[2px_2px_0px_0px_#000] dark:shadow-[2px_2px_0px_0px_#fff] active:translate-y-[2px] active:shadow-none transition-all font-display"><Play size={16} /> ใช้งาน</button>
+                                        <div className="p-3 border-t-3 border-black dark:border-white grid grid-cols-2 gap-3 bg-gray-50 dark:bg-zinc-800">
+                                            <button onClick={() => handleCopy(prompt.content || (prompt.workflow && prompt.workflow[0]?.content))} className="flex items-center justify-center gap-2 font-bold text-sm border-2 border-black dark:border-white bg-white dark:bg-zinc-900 dark:text-white hover:bg-gray-100 dark:hover:bg-zinc-700 py-2 shadow-[2px_2px_0px_0px_#000] dark:shadow-[2px_2px_0px_0px_#fff] active:translate-y-[2px] active:shadow-none transition-all font-display"><Copy size={16} /> คัดลอก</button>
+                                            <button onClick={() => openRunner(prompt)} className="flex items-center justify-center gap-2 font-bold text-sm border-2 border-black dark:border-white bg-cyan-300 dark:bg-cyan-700 dark:text-white hover:bg-cyan-400 dark:hover:bg-cyan-600 py-2 shadow-[2px_2px_0px_0px_#000] dark:shadow-[2px_2px_0px_0px_#fff] active:translate-y-[2px] active:shadow-none transition-all font-display"><Play size={16} /> ใช้งาน</button>
+                                        </div>
                                     </div>
                                 </div>
                             );
@@ -856,8 +858,8 @@ export default function App() {
 
 
                         <div className="flex justify-end gap-3 pt-4 border-t-2 border-gray-200 dark:border-zinc-700">
-                            <NeoButton onClick={() => setIsModalOpen(false)} variant="invert">ยกเลิก</NeoButton>
-                            <NeoButton type="submit" variant="invert" icon={Check}>บันทึก</NeoButton>
+                            <NeoButton onClick={() => setIsModalOpen(false)} variant="danger">ยกเลิก</NeoButton>
+                            <NeoButton type="submit" variant="success" icon={Check}>บันทึก</NeoButton>
                         </div>
                     </form>
                 )}
