@@ -3,7 +3,8 @@ import {
     Plus, Search, Copy, Heart, Trash2, Edit2, Play,
     LogOut, User, X, Check, Terminal,
     Upload, Hash, ArrowUpDown, Clock, AlertTriangle,
-    BookOpen, Info, Layers, GripVertical, RotateCcw
+    BookOpen, Info, Layers, GripVertical, RotateCcw,
+    Menu, Moon, Sun
 } from 'lucide-react';
 import {
     onAuthStateChanged, signInAnonymously,
@@ -39,7 +40,16 @@ export default function App() {
     const [showFavorites, setShowFavorites] = useState(false);
     const [isTagMenuOpen, setIsTagMenuOpen] = useState(false);
     const [selectedTag, setSelectedTag] = useState(null);
+    const [selectedTag, setSelectedTag] = useState(null);
     const [toast, setToast] = useState(null);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [isDarkMode, setIsDarkMode] = useState(() => {
+        if (typeof window !== 'undefined') {
+            return localStorage.getItem('theme') === 'dark' ||
+                (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        }
+        return false;
+    });
 
     // Sorting State
     const [sortBy, setSortBy] = useState('createdAt');
@@ -74,6 +84,16 @@ export default function App() {
     };
 
     // Auth
+    useEffect(() => {
+        if (isDarkMode) {
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+            localStorage.setItem('theme', 'light');
+        }
+    }, [isDarkMode]);
+
     useEffect(() => {
         const initAuth = async () => {
             // Check for custom token passed via global variable (legacy)
@@ -479,16 +499,27 @@ export default function App() {
         <div className="min-h-screen flex flex-col md:flex-row bg-[#f3f4f6]">
             {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
 
+            {/* Sidebar Overlay (Mobile) */}
+            {isSidebarOpen && (
+                <div
+                    className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm"
+                    onClick={() => setIsSidebarOpen(false)}
+                />
+            )}
+
             {/* Sidebar */}
-            <aside className="w-full md:w-64 bg-white border-r-4 border-black flex flex-col md:h-screen sticky top-0 z-10">
-                <div className="p-6 border-b-4 border-black bg-yellow-300">
-                    <h1 className="text-2xl italic tracking-tighter flex items-center gap-2">
+            <aside className={`w-64 bg-white dark:bg-zinc-900 border-r-4 border-black dark:border-white flex flex-col h-screen fixed md:sticky top-0 z-50 transition-transform duration-300 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
+                <div className="p-6 border-b-4 border-black dark:border-white bg-yellow-300 dark:bg-yellow-600 flex justify-between items-center">
+                    <h1 className="text-2xl italic tracking-tighter flex items-center gap-2 text-black">
                         <Terminal strokeWidth={3} />
                         PROMPT.KEEPER
                     </h1>
+                    <button onClick={() => setIsSidebarOpen(false)} className="md:hidden p-1 hover:bg-black hover:text-white rounded transition-colors">
+                        <X size={24} />
+                    </button>
                 </div>
-                <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
-                    <button onClick={() => setActiveCategory('all')} className={`w-full text-left p-3 font-bold border-2 border-black flex justify-between items-center transition-all mb-2 ${activeCategory === 'all' ? 'bg-black text-white' : 'bg-white hover:bg-gray-100'}`}>
+                <nav className="flex-1 p-4 space-y-2 overflow-y-auto bg-white dark:bg-zinc-900">
+                    <button onClick={() => { setActiveCategory('all'); setIsSidebarOpen(false); }} className={`w-full text-left p-3 font-bold border-2 border-black dark:border-white flex justify-between items-center transition-all mb-2 ${activeCategory === 'all' ? 'bg-black text-white dark:bg-white dark:text-black' : 'bg-white hover:bg-gray-100 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700'}`}>
                         <span className="font-display">ทั้งหมด</span>
                         <span className="bg-white text-black text-xs px-2 py-0.5 border border-black">{prompts.length}</span>
                     </button>
@@ -496,7 +527,7 @@ export default function App() {
                         const isSystemCategory = DEFAULT_CATEGORIES.some(dc => dc.id === cat.id);
                         return (
                             <div key={cat.id} className="relative group">
-                                <button onClick={() => setActiveCategory(cat.id)} className={`w-full text-left p-3 font-bold border-2 border-black flex justify-between items-center transition-all mb-2 ${activeCategory === cat.id ? 'translate-x-2 shadow-none ' + cat.color : 'bg-white hover:bg-gray-50'}`}>
+                                <button onClick={() => { setActiveCategory(cat.id); setIsSidebarOpen(false); }} className={`w-full text-left p-3 font-bold border-2 border-black dark:border-white flex justify-between items-center transition-all mb-2 ${activeCategory === cat.id ? 'translate-x-2 shadow-none ' + cat.color : 'bg-white hover:bg-gray-50 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700'}`}>
                                     <div className="flex items-center gap-2 font-display">{renderIcon(cat.icon)}{cat.name}</div>
                                     <span className="bg-black text-white text-xs px-2 py-0.5">{prompts.filter(p => p.category === cat.id).length}</span>
                                 </button>
@@ -508,22 +539,36 @@ export default function App() {
                             </div>
                         );
                     })}
-                    <button onClick={() => setIsCategoryModalOpen(true)} className="w-full text-left p-3 font-bold border-2 border-dashed border-gray-400 text-gray-500 hover:border-black hover:text-black hover:bg-white flex justify-center items-center gap-2 transition-all mt-4">
+                    <button onClick={() => setIsCategoryModalOpen(true)} className="w-full text-left p-3 font-bold border-2 border-dashed border-gray-400 text-gray-500 hover:border-black hover:text-black hover:bg-white dark:border-zinc-600 dark:text-zinc-400 dark:hover:border-white dark:hover:text-white dark:hover:bg-zinc-800 flex justify-center items-center gap-2 transition-all mt-4">
                         <Plus size={16} /> สร้างหมวดหมู่
                     </button>
                 </nav>
-                <div className="p-4 border-t-4 border-black bg-gray-100">
-                    <div className="flex items-center gap-3 mb-3">
-                        <div className="w-10 h-10 border-2 border-black bg-white flex items-center justify-center font-bold text-lg font-display">{user.isAnonymous ? '?' : user.displayName?.[0] || 'U'}</div>
-                        <div className="overflow-hidden"><p className="font-bold text-sm truncate font-display">{user.isAnonymous ? 'ผู้เยี่ยมชม' : user.displayName}</p><p className="text-xs text-gray-500 truncate">{user.uid.slice(0, 8)}...</p></div>
+                <div className="p-4 border-t-4 border-black dark:border-white bg-gray-100 dark:bg-zinc-800">
+                    <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-2 text-xs font-bold uppercase text-gray-500 dark:text-gray-400">
+                            {isDarkMode ? <Moon size={14} /> : <Sun size={14} />} Theme
+                        </div>
+                        <button
+                            onClick={() => setIsDarkMode(!isDarkMode)}
+                            className="bg-white dark:bg-black border-2 border-black dark:border-white px-3 py-1 text-xs font-bold hover:bg-gray-100 dark:hover:bg-zinc-800 dark:text-white transition-all flex items-center gap-2"
+                        >
+                            {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+                        </button>
                     </div>
-                    <button onClick={() => signOut(auth)} className="w-full border-2 border-black bg-red-400 text-white font-bold py-2 text-xs hover:bg-red-500 flex items-center justify-center gap-2 font-display"><LogOut size={14} /> ออกจากระบบ</button>
+                    <div className="flex items-center gap-3 mb-3">
+                        <div className="w-10 h-10 border-2 border-black dark:border-white bg-white dark:bg-black dark:text-white flex items-center justify-center font-bold text-lg font-display">{user.isAnonymous ? '?' : user.displayName?.[0] || 'U'}</div>
+                        <div className="overflow-hidden dark:text-white"><p className="font-bold text-sm truncate font-display">{user.isAnonymous ? 'ผู้เยี่ยมชม' : user.displayName}</p><p className="text-xs text-gray-500 truncate">{user.uid.slice(0, 8)}...</p></div>
+                    </div>
+                    <button onClick={() => signOut(auth)} className="w-full border-2 border-black dark:border-white bg-red-400 text-white font-bold py-2 text-xs hover:bg-red-500 flex items-center justify-center gap-2 font-display"><LogOut size={14} /> ออกจากระบบ</button>
                 </div>
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 flex flex-col h-screen overflow-hidden">
-                <header className="h-20 bg-white border-b-4 border-black flex items-center px-6 gap-4 shrink-0">
+            <main className="flex-1 flex flex-col h-screen overflow-hidden bg-[#f3f4f6] dark:bg-black transition-colors">
+                <header className="h-20 bg-white dark:bg-zinc-900 border-b-4 border-black dark:border-white flex items-center px-4 md:px-6 gap-4 shrink-0 transition-colors">
+                    <button onClick={() => setIsSidebarOpen(true)} className="md:hidden p-2 border-2 border-black dark:border-white hover:bg-gray-100 dark:hover:bg-zinc-800 dark:text-white rounded-none">
+                        <Menu size={24} />
+                    </button>
                     <div className="flex-1 relative">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                         <input type="text" placeholder="ค้นหาคำสั่ง..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full h-12 pl-12 pr-4 border-3 border-black font-bold focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all outline-none font-display bg-white" />
@@ -790,13 +835,13 @@ export default function App() {
                     <div><label className="block font-bold mb-2 text-sm uppercase font-display">ชื่อหมวดหมู่</label><input required name="catName" className="w-full neo-input" placeholder="เช่น การเงิน, สุขภาพ, ออกแบบ..." /></div>
                     <div>
                         <label className="block font-bold mb-2 text-sm uppercase font-display">เลือกไอคอน</label>
-                        <div className="grid grid-cols-5 gap-2 h-40 overflow-y-auto border-2 border-black p-2">
+                        <div className="grid grid-cols-10 gap-1 h-40 overflow-y-auto border-2 border-black p-2">
                             {Object.keys(ICON_MAP).map((iconKey) => {
                                 const IconComp = ICON_MAP[iconKey];
                                 return (
                                     <label key={iconKey} className="cursor-pointer">
                                         <input type="radio" name="iconSelect" value={iconKey} className="peer sr-only" required defaultChecked={iconKey === 'Star'} />
-                                        <div className="w-full aspect-square border-2 border-transparent peer-checked:border-black peer-checked:bg-yellow-300 peer-hover:bg-gray-100 flex items-center justify-center transition-all"><IconComp size={24} /></div>
+                                        <div className="w-full aspect-square border-2 border-transparent peer-checked:border-black peer-checked:bg-yellow-300 peer-hover:bg-gray-100 flex items-center justify-center transition-all"><IconComp size={18} /></div>
                                     </label>
                                 )
                             })}
