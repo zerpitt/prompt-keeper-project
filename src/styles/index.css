@@ -17,7 +17,13 @@ body {
   color: var(--color-text);
 }
 
-h1, h2, h3, h4, h5, h6, .font-display {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.font-display {
   font-family: 'Kanit', sans-serif;
   font-weight: 900;
 }
@@ -47,8 +53,18 @@ h1, h2, h3, h4, h5, h6, .font-display {
   box-shadow: var(--shadow-hard);
   transition: all 0.1s;
 }
+
+.dark .neo-btn {
+  border-color: #fff;
+  box-shadow: 4px 4px 0px 0px #fff;
+}
+
 .neo-btn:active {
   transform: translate(4px, 4px);
+  box-shadow: none;
+}
+
+.dark .neo-btn:active {
   box-shadow: none;
 }
 
@@ -59,21 +75,47 @@ h1, h2, h3, h4, h5, h6, .font-display {
   outline: none;
   transition: all 0.2s;
   background-color: #fff;
+  color: #000;
 }
+
 .neo-input:focus {
-  background-color: #ffffff; 
+  background-color: #ffffff;
   border-color: #000;
+}
+
+.dark .neo-input {
+  background-color: #27272a;
+  /* zinc-800 */
+  border-color: #fff;
+  color: #fff;
+}
+
+.dark .neo-input:focus {
+  background-color: #3f3f46;
+  /* zinc-700 */
 }
 
 /* Scrollbar */
 ::-webkit-scrollbar {
   width: 12px;
 }
+
 ::-webkit-scrollbar-track {
   background: #eee;
   border-left: 2px solid #000;
 }
+
 ::-webkit-scrollbar-thumb {
   background: #000;
   border: 2px solid #eee;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #27272a;
+  border-left: 2px solid #fff;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #fff;
+  border: 2px solid #27272a;
 }
