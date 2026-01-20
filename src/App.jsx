@@ -407,14 +407,7 @@ export default function App() {
         }
     };
 
-    const handleGoogleLogin = async () => {
-        try {
-            await signInWithPopup(auth, googleProvider);
-        } catch (err) {
-            console.error(err);
-            showToast("เกิดข้อผิดพลาดในการเข้าสู่ระบบด้วย Google", "error");
-        }
-    };
+
 
     const handleCopy = (text) => {
         const textarea = document.createElement('textarea');
