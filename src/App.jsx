@@ -588,9 +588,9 @@ export default function App() {
 
                                         {/* Content Preview - Show first block or summary */}
                                         <div className="space-y-2">
-                                            {prompt.guideText && (
+                                            {prompt.workflow && prompt.workflow.length > 1 && (
                                                 <div className="flex items-center gap-1 text-[10px] font-bold bg-yellow-100 border border-black px-1 w-fit">
-                                                    <Info size={10} /> มีลำดับการทำงาน
+                                                    <Layers size={10} /> มีลำดับการทำงาน
                                                 </div>
                                             )}
                                             <p className="text-sm text-gray-600 overflow-hidden line-clamp-3 leading-relaxed font-mono">
@@ -696,7 +696,6 @@ export default function App() {
                             </label>
                             <div className="flex justify-between items-center mb-1">
                                 <span className="text-xs text-gray-500">คำแนะนำการตั้งค่า หรือเทคนิคการใช้ Prompt นี้</span>
-                                <button type="button" onClick={() => { setActiveTextareaId('guideText'); insertVariableTemplate(); }} className="text-xs bg-black text-white px-2 py-1 font-bold flex items-center gap-1 hover:bg-gray-800">[ ] แทรกตัวแปร</button>
                             </div>
                             <textarea
                                 id="textarea-guideText"
@@ -851,7 +850,7 @@ export default function App() {
                                 </div>
                                 <button
                                     onClick={() => handleCopy(getProcessedContent(block.content))}
-                                    className="mt-2 w-full bg-white border-3 border-black font-bold py-2 hover:bg-gray-100 shadow-[2px_2px_0px_0px_#000] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center gap-2 text-sm"
+                                    className="mt-2 w-full bg-white text-black border-2 border-black font-bold py-2 hover:bg-black hover:text-white shadow-[2px_2px_0px_0px_#000] active:translate-y-[2px] active:shadow-none transition-all flex items-center justify-center gap-2 text-sm font-display relative overflow-hidden"
                                 >
                                     <Copy size={16} /> คัดลอก {variableModal.prompt.workflow.length > 1 && (block.title ? `"${block.title}"` : 'คำสั่ง')}
                                 </button>
