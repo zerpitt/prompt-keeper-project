@@ -53,6 +53,7 @@ export default function App() {
     // Sorting State
     const [sortBy, setSortBy] = useState('createdAt');
     const [sortOrder, setSortOrder] = useState('desc');
+    const [gridCols, setGridCols] = useState(3); // 1, 3, 5
 
     // Modals & Forms
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -597,6 +598,13 @@ export default function App() {
                         <button onClick={() => setShowFavorites(!showFavorites)} className={`h-12 w-12 border-2 border-black dark:border-white flex items-center justify-center shadow-[4px_4px_0px_0px_#000] dark:shadow-[4px_4px_0px_0px_#fff] active:translate-y-[2px] active:shadow-none transition-all ${showFavorites ? 'bg-pink-500 text-white dark:border-pink-500' : 'bg-white text-pink-500 hover:bg-pink-500 hover:text-white dark:bg-zinc-800'}`} title="รายการโปรด">
                             <Heart size={24} strokeWidth={3} fill={showFavorites ? "currentColor" : "none"} />
                         </button>
+                        <div className="hidden md:flex items-center border-2 border-black dark:border-white bg-white dark:bg-zinc-800 h-12 mr-2">
+                            <button onClick={() => setGridCols(1)} className={`px-3 h-full flex items-center justify-center hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors ${gridCols === 1 ? 'bg-black text-white dark:bg-white dark:text-black' : 'dark:text-white'}`} title="1 คอลัมน์">1</button>
+                            <div className="w-[2px] h-full bg-black dark:bg-white"></div>
+                            <button onClick={() => setGridCols(3)} className={`px-3 h-full flex items-center justify-center hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors ${gridCols === 3 ? 'bg-black text-white dark:bg-white dark:text-black' : 'dark:text-white'}`} title="3 คอลัมน์">3</button>
+                            <div className="w-[2px] h-full bg-black dark:bg-white"></div>
+                            <button onClick={() => setGridCols(5)} className={`px-3 h-full flex items-center justify-center hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors ${gridCols === 5 ? 'bg-black text-white dark:bg-white dark:text-black' : 'dark:text-white'}`} title="5 คอลัมน์">5</button>
+                        </div>
                         <div className="relative">
                             <button onClick={() => setIsTagMenuOpen(!isTagMenuOpen)} className={`h-12 w-12 border-2 border-black dark:border-white flex items-center justify-center shadow-[4px_4px_0px_0px_#000] dark:shadow-[4px_4px_0px_0px_#fff] active:translate-y-[2px] active:shadow-none transition-all ${selectedTag ? 'bg-black text-white dark:bg-white dark:text-black' : 'bg-white text-black hover:bg-gray-100 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700'}`} title="กรองตามแท็ก"><Hash size={24} strokeWidth={3} /></button>
                             {isTagMenuOpen && (
@@ -618,7 +626,7 @@ export default function App() {
                 <div className="flex-1 overflow-y-auto p-6 bg-[#f3f4f6] dark:bg-black transition-colors">
                     <div className="fixed inset-0 pointer-events-none opacity-5 dark:opacity-20 z-0" style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
                     <div className="fixed inset-0 pointer-events-none opacity-0 dark:opacity-20 z-0" style={{ backgroundImage: 'radial-gradient(#fff 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 relative z-10 pb-20">
+                    <div className={`grid gap-6 relative z-10 pb-20 ${gridCols === 1 ? 'grid-cols-1 max-w-3xl mx-auto' : gridCols === 5 ? 'grid-cols-2 md:grid-cols-4 xl:grid-cols-5' : 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3'}`}>
                         {filteredPrompts.length === 0 && (
                             <div className="col-span-full flex flex-col items-center justify-center py-20 text-gray-400"><Terminal size={64} className="mb-4 opacity-20" /><h2 className="text-2xl font-black text-gray-300 font-display">ไม่พบข้อมูล</h2></div>
                         )}
@@ -630,7 +638,7 @@ export default function App() {
                             return (
                                 <div key={prompt.id} className="bg-white dark:bg-zinc-900 border-3 border-black dark:border-white shadow-[6px_6px_0px_0px_#000] dark:shadow-[6px_6px_0px_0px_#fff] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_#000] dark:hover:shadow-[2px_2px_0px_0px_#fff] transition-all flex flex-col h-auto min-h-[320px]">
                                     {prompt.image && (
-                                        <div className="w-full h-40 border-b-3 border-black dark:border-white bg-gray-100 dark:bg-zinc-800 overflow-hidden relative"><img src={prompt.image} alt="cover" className="w-full h-full object-cover" /><div className="absolute top-2 right-2 bg-black text-white text-[10px] px-1 font-bold">WEBP</div></div>
+                                        <div className="w-full aspect-square border-b-3 border-black dark:border-white bg-black overflow-hidden relative"><img src={prompt.image} alt="cover" className="w-full h-full object-contain" /><div className="absolute top-2 right-2 bg-black text-white text-[10px] px-1 font-bold border border-white">WEBP</div></div>
                                     )}
                                     <div className="p-3 border-b-3 border-black dark:border-white flex justify-between items-center bg-gray-50 dark:bg-zinc-800">
                                         <NeoBadge color={category.color}>{category.name}</NeoBadge>
