@@ -26,6 +26,7 @@ import NeoBadge from './components/NeoBadge';
 import Modal from './components/Modal';
 import Toast from './components/Toast';
 import TagInput from './components/TagInput';
+import EmptyState from './components/EmptyState';
 
 export default function App() {
     const [user, setUser] = useState(null);
@@ -488,8 +489,10 @@ export default function App() {
 
     if (!user) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4 relative overflow-hidden">
-                <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle, #000 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
+            <div className="min-h-screen flex items-center justify-center bg-[#f3f4f6] p-4 relative overflow-hidden">
+                {/* Background Pattern */}
+                <div className="absolute inset-0 z-0 opacity-[0.05]" style={{ backgroundImage: 'radial-gradient(#000 1.5px, transparent 1.5px)', backgroundSize: '24px 24px' }}></div>
+                <div className="absolute inset-0 z-0 opacity-[0.02]" style={{ backgroundImage: 'linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%, #000), linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%, #000)', backgroundSize: '40px 40px', backgroundPosition: '0 0, 20px 20px' }}></div>
                 <div className="neo-box-static bg-white p-8 max-w-md w-full relative z-10">
                     <div className="bg-black text-white px-2 py-1 font-bold text-xs absolute -top-4 left-4 border-2 border-black font-display">
                         PROMPT.KEEPER_V.1.0
@@ -637,12 +640,19 @@ export default function App() {
                     </div>
                 </header>
 
-                <div className="flex-1 overflow-y-auto p-6 bg-[#f3f4f6] dark:bg-black transition-colors">
-                    <div className="fixed inset-0 pointer-events-none opacity-5 dark:opacity-20 z-0" style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
-                    <div className="fixed inset-0 pointer-events-none opacity-0 dark:opacity-20 z-0" style={{ backgroundImage: 'radial-gradient(#fff 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
+                <div className="flex-1 overflow-y-auto p-6 bg-[#f8f9fa] dark:bg-black transition-colors relative">
+                    {/* Dot Grid Background */}
+                    <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.03] dark:opacity-[0.1]" style={{ backgroundImage: 'radial-gradient(#000 1.5px, transparent 1.5px)', backgroundSize: '20px 20px' }}></div>
+                    <div className="absolute inset-0 z-0 pointer-events-none opacity-0 dark:opacity-[0.1]" style={{ backgroundImage: 'radial-gradient(#fff 1.5px, transparent 1.5px)', backgroundSize: '20px 20px' }}></div>
+
                     <div className={`grid gap-6 relative z-10 pb-20 ${gridCols === 1 ? 'grid-cols-1 max-w-3xl mx-auto' : gridCols === 5 ? 'grid-cols-2 md:grid-cols-4 xl:grid-cols-5' : 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3'}`}>
                         {filteredPrompts.length === 0 && (
-                            <div className="col-span-full flex flex-col items-center justify-center py-20 text-gray-400"><Terminal size={64} className="mb-4 opacity-20" /><h2 className="text-2xl font-black text-gray-300 font-display">ไม่พบข้อมูล</h2></div>
+                            <EmptyState
+                                title="ยังไม่มี Prompt"
+                                message="เริ่มต้นสร้างคอลเลกชัน Prompt ของคุณได้เลย! จะเก็บ Prompt รูปภาพ หรือข้อความก็ได้หมด"
+                                actionLabel="สร้าง Prompt แรก"
+                                onAction={handleOpenCreateModal}
+                            />
                         )}
                         {filteredPrompts.map(prompt => {
                             const category = allCategories.find(c => c.id === prompt.category) || allCategories[4];
