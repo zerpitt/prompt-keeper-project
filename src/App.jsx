@@ -538,15 +538,15 @@ export default function App() {
                     </button>
                 </div>
                 <nav className="flex-1 p-4 space-y-2 overflow-y-auto bg-white dark:bg-zinc-900">
-                    <button onClick={() => { setActiveCategory('all'); setIsSidebarOpen(false); }} className={`w-full text-left p-3 font-bold border-2 border-black dark:border-white flex justify-between items-center transition-all mb-2 ${activeCategory === 'all' ? 'bg-black text-white dark:bg-white dark:text-black' : 'bg-white hover:bg-gray-100 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700'}`}>
+                    <button onClick={() => { setActiveCategory('all'); setIsSidebarOpen(false); }} className={`w-full text-left p-3 font-bold border-2 border-black dark:border-white flex justify-between items-center transition-all mb-2 ${activeCategory === 'all' ? 'bg-black text-white dark:bg-white dark:text-black translate-x-[2px] translate-y-[2px] shadow-none' : 'bg-white hover:bg-gray-100 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700 shadow-[4px_4px_0px_0px_#000] dark:shadow-[4px_4px_0px_0px_#fff] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none'}`}>
                         <span className="font-display">ทั้งหมด</span>
-                        <span className="bg-white text-black text-xs px-2 py-0.5 border border-black">{prompts.length}</span>
+                        <span className={`text-xs px-2 py-0.5 border border-black ${activeCategory === 'all' ? 'bg-white text-black' : 'bg-black text-white'}`}>{prompts.length}</span>
                     </button>
                     {allCategories.map(cat => {
                         const isSystemCategory = DEFAULT_CATEGORIES.some(dc => dc.id === cat.id);
                         return (
                             <div key={cat.id} className="relative group">
-                                <button onClick={() => { setActiveCategory(cat.id); setIsSidebarOpen(false); }} className={`w-full text-left p-3 font-bold border-2 border-black dark:border-white flex justify-between items-center transition-all mb-2 ${activeCategory === cat.id ? 'translate-x-2 shadow-none ' + cat.color : 'bg-white hover:bg-gray-50 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700'}`}>
+                                <button onClick={() => { setActiveCategory(cat.id); setIsSidebarOpen(false); }} className={`w-full text-left p-3 font-bold border-2 border-black dark:border-white flex justify-between items-center transition-all mb-2 ${activeCategory === cat.id ? 'translate-x-[2px] translate-y-[2px] shadow-none ' + cat.color : 'bg-white hover:bg-gray-50 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700 shadow-[4px_4px_0px_0px_#000] dark:shadow-[4px_4px_0px_0px_#fff] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none'}`}>
                                     <div className="flex items-center gap-2 font-display">{renderIcon(cat.icon)}{cat.name}</div>
                                     <span className="bg-black text-white text-xs px-2 py-0.5">{prompts.filter(p => p.category === cat.id).length}</span>
                                 </button>
@@ -592,26 +592,32 @@ export default function App() {
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                         <input type="text" placeholder="ค้นหาคำสั่ง..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full h-12 pl-12 pr-4 border-3 border-black dark:border-white font-bold focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:focus:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] transition-all outline-none font-display bg-white dark:bg-zinc-800 dark:text-white dark:placeholder-gray-500" />
                     </div>
-                    <div className="flex items-center gap-3">
-                        <div className="hidden md:flex items-center gap-2 border-2 border-black dark:border-white bg-gray-50 dark:bg-zinc-800 px-2 h-12 mr-2">
-                            <span className="text-xs font-bold hidden xl:block uppercase dark:text-gray-300">เรียงตาม:</span>
+                    <div className="flex items-center gap-2 md:gap-3">
+                        {/* Desktop Only Controls */}
+                        <div className="hidden xl:flex items-center gap-2 border-3 border-black dark:border-white bg-white dark:bg-zinc-800 px-3 h-12 mr-2 shadow-[4px_4px_0px_0px_#000] dark:shadow-[4px_4px_0px_0px_#fff]">
+                            <span className="text-xs font-bold uppercase dark:text-gray-300">เรียงตาม:</span>
                             <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="bg-transparent font-bold text-sm outline-none cursor-pointer dark:text-white dark:bg-zinc-800">
                                 <option value="createdAt">วันที่สร้าง</option>
                                 <option value="updatedAt">วันที่แก้ไข</option>
                             </select>
-                            <button onClick={() => setSortOrder(prev => prev === 'desc' ? 'asc' : 'desc')} className="p-1 hover:bg-black hover:text-white dark:text-white dark:hover:bg-white dark:hover:text-black rounded-none transition-all" title={sortOrder === 'desc' ? 'มากไปน้อย' : 'น้อยไปมาก'}><ArrowUpDown size={16} /></button>
+                            <div className="w-[2px] h-4 bg-black dark:bg-zinc-600 mx-1"></div>
+                            <button onClick={() => setSortOrder(prev => prev === 'desc' ? 'asc' : 'desc')} className="p-1 hover:bg-black hover:text-white dark:text-white dark:hover:bg-white dark:hover:text-black rounded transition-all" title={sortOrder === 'desc' ? 'มากไปน้อย' : 'น้อยไปมาก'}><ArrowUpDown size={16} /></button>
                         </div>
-                        <button onClick={() => setShowFavorites(!showFavorites)} className={`h-12 w-12 border-2 border-black dark:border-white flex items-center justify-center shadow-[4px_4px_0px_0px_#000] dark:shadow-[4px_4px_0px_0px_#fff] active:translate-y-[2px] active:shadow-none transition-all ${showFavorites ? 'bg-pink-500 text-white dark:border-pink-500' : 'bg-white text-pink-500 hover:bg-pink-500 hover:text-white dark:bg-zinc-800'}`} title="รายการโปรด">
+
+                        {/* Mobile: Hidden, Desktop: Visible */}
+                        <button onClick={() => setShowFavorites(!showFavorites)} className={`hidden md:flex h-12 w-12 border-2 border-black dark:border-white items-center justify-center shadow-[4px_4px_0px_0px_#000] dark:shadow-[4px_4px_0px_0px_#fff] active:translate-y-[2px] active:shadow-none transition-all ${showFavorites ? 'bg-pink-500 text-white dark:border-pink-500' : 'bg-white text-pink-500 hover:bg-pink-500 hover:text-white dark:bg-zinc-800'}`} title="รายการโปรด">
                             <Heart size={24} strokeWidth={3} fill={showFavorites ? "currentColor" : "none"} />
                         </button>
-                        <div className="hidden md:flex items-center border-2 border-black dark:border-white bg-white dark:bg-zinc-800 h-12 mr-2">
+
+                        <div className="hidden lg:flex items-center border-2 border-black dark:border-white bg-white dark:bg-zinc-800 h-12 mr-2">
                             <button onClick={() => setGridCols(1)} className={`px-3 h-full flex items-center justify-center hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors ${gridCols === 1 ? 'bg-black text-white dark:bg-white dark:text-black' : 'dark:text-white'}`} title="1 คอลัมน์">1</button>
                             <div className="w-[2px] h-full bg-black dark:bg-white"></div>
                             <button onClick={() => setGridCols(3)} className={`px-3 h-full flex items-center justify-center hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors ${gridCols === 3 ? 'bg-black text-white dark:bg-white dark:text-black' : 'dark:text-white'}`} title="3 คอลัมน์">3</button>
                             <div className="w-[2px] h-full bg-black dark:bg-white"></div>
                             <button onClick={() => setGridCols(5)} className={`px-3 h-full flex items-center justify-center hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors ${gridCols === 5 ? 'bg-black text-white dark:bg-white dark:text-black' : 'dark:text-white'}`} title="5 คอลัมน์">5</button>
                         </div>
-                        <div className="relative">
+
+                        <div className="relative hidden md:block">
                             <button onClick={() => setIsTagMenuOpen(!isTagMenuOpen)} className={`h-12 w-12 border-2 border-black dark:border-white flex items-center justify-center shadow-[4px_4px_0px_0px_#000] dark:shadow-[4px_4px_0px_0px_#fff] active:translate-y-[2px] active:shadow-none transition-all ${selectedTag ? 'bg-black text-white dark:bg-white dark:text-black' : 'bg-white text-black hover:bg-gray-100 dark:bg-zinc-800 dark:text-white dark:hover:bg-zinc-700'}`} title="กรองตามแท็ก"><Hash size={24} strokeWidth={3} /></button>
                             {isTagMenuOpen && (
                                 <div className="absolute top-full right-0 mt-3 w-64 bg-white dark:bg-zinc-900 border-3 border-black dark:border-white shadow-[4px_4px_0px_0px_#000] dark:shadow-[4px_4px_0px_0px_#fff] p-4 z-50 animate-in fade-in slide-in-from-top-2 duration-100">
@@ -625,7 +631,9 @@ export default function App() {
                                 </div>
                             )}
                         </div>
-                        <NeoButton onClick={handleOpenCreateModal} icon={Plus} variant="accent" className="h-12">สร้างใหม่</NeoButton>
+                        {/* Responsive Create Button: Icon only on small screens */}
+                        <NeoButton onClick={handleOpenCreateModal} icon={Plus} variant="accent" className="h-12 hidden md:flex">สร้างใหม่</NeoButton>
+                        <button onClick={handleOpenCreateModal} className="md:hidden h-12 w-12 border-2 border-black bg-[#A3E635] text-black shadow-[4px_4px_0px_0px_#000] flex items-center justify-center active:translate-y-[2px] active:shadow-none"><Plus size={28} strokeWidth={3} /></button>
                     </div>
                 </header>
 
@@ -649,9 +657,9 @@ export default function App() {
                                     <div className="p-3 border-b-3 border-black dark:border-white flex justify-between items-center bg-gray-50 dark:bg-zinc-800">
                                         <NeoBadge color={category.color}>{category.name}</NeoBadge>
                                         <div className="flex gap-2">
-                                            <button onClick={() => toggleFavorite(prompt)} className={`hover:scale-110 transition-transform ${prompt.isFavorite ? 'text-red-500 fill-red-500' : 'text-gray-400 dark:text-zinc-500'}`}><Heart size={20} strokeWidth={3} /></button>
-                                            <button onClick={() => handleOpenEditModal(prompt)} className="hover:text-blue-600 dark:text-white dark:hover:text-blue-400"><Edit2 size={20} strokeWidth={3} /></button>
-                                            <button onClick={() => initiateDeletePrompt(prompt.id)} className="hover:text-red-600 dark:text-white dark:hover:text-red-400"><Trash2 size={20} strokeWidth={3} /></button>
+                                            <button onClick={() => toggleFavorite(prompt)} className={`w-8 h-8 flex items-center justify-center border-2 border-black dark:border-white shadow-[2px_2px_0px_0px_#000] dark:shadow-[2px_2px_0px_0px_#fff] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all ${prompt.isFavorite ? 'bg-red-100 text-red-500' : 'bg-white text-gray-400 hover:text-red-500 dark:bg-zinc-800 dark:text-zinc-400'}`}><Heart size={16} strokeWidth={3} fill={prompt.isFavorite ? "currentColor" : "none"} /></button>
+                                            <button onClick={() => handleOpenEditModal(prompt)} className="w-8 h-8 flex items-center justify-center border-2 border-black dark:border-white bg-white hover:bg-yellow-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 shadow-[2px_2px_0px_0px_#000] dark:shadow-[2px_2px_0px_0px_#fff] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all"><Edit2 size={16} strokeWidth={3} /></button>
+                                            <button onClick={() => initiateDeletePrompt(prompt.id)} className="w-8 h-8 flex items-center justify-center border-2 border-black dark:border-white bg-white hover:bg-red-100 dark:bg-zinc-800 dark:hover:bg-red-900 shadow-[2px_2px_0px_0px_#000] dark:shadow-[2px_2px_0px_0px_#fff] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-all"><Trash2 size={16} strokeWidth={3} /></button>
                                         </div>
                                     </div>
                                     <div className="p-4 flex-1 overflow-hidden relative group">
