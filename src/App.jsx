@@ -25,6 +25,7 @@ import NeoButton from './components/NeoButton';
 import NeoBadge from './components/NeoBadge';
 import Modal from './components/Modal';
 import Toast from './components/Toast';
+import TagInput from './components/TagInput';
 
 export default function App() {
     const [user, setUser] = useState(null);
@@ -67,7 +68,9 @@ export default function App() {
     const [formData, setFormData] = useState({
         title: '',
         category: 'image',
-        tags: '',
+        title: '',
+        category: 'image',
+        tags: [], // Changed from string '' to array []
         guideText: '',
         workflow: [] // Array of { id, title, content }
     });
@@ -172,7 +175,7 @@ export default function App() {
         setImagePreview(null);
         // Default: 1 workflow block
         setFormData({
-            title: '', category: 'image', tags: '', guideText: '',
+            title: '', category: 'image', tags: [], guideText: '',
             workflow: [{ id: Date.now().toString(), title: 'ขั้นตอนที่ 1', content: '' }]
         });
         setShowHistory(false);
@@ -195,7 +198,9 @@ export default function App() {
         setFormData({
             title: prompt.title || '',
             category: prompt.category || 'image',
-            tags: prompt.tags?.join(', ') || '',
+            title: prompt.title || '',
+            category: prompt.category || 'image',
+            tags: prompt.tags || [], // Ensure array
             guideText: prompt.guideText || '',
             workflow: loadedWorkflow
         });
@@ -281,7 +286,7 @@ export default function App() {
         e.preventDefault();
         if (!user) return;
 
-        const { title, category, tags: tagsStr, guideText, workflow } = formData;
+        const { title, category, tags, guideText, workflow } = formData;
         if (!title.trim()) {
             showToast("กรุณาใส่หัวข้อ", "error");
             return;
@@ -292,7 +297,8 @@ export default function App() {
             return;
         }
 
-        const tags = tagsStr.split(',').map(t => t.trim()).filter(Boolean);
+        // Tags are already an array now
+        // const tags = tagsStr.split(',').map(t => t.trim()).filter(Boolean);
 
         // Extract variables from Guide + All Workflow Steps
         let allContent = guideText;
@@ -748,8 +754,12 @@ export default function App() {
                                 </div>
                             </div>
                             <div>
-                                <label className="block font-bold mb-1 text-sm uppercase font-display dark:text-white">แท็ก (คั่นด้วยจุลภาค)</label>
-                                <input name="tags" value={formData.tags} onChange={handleFormChange} className="w-full neo-input" placeholder="seo, writing, gpt4" />
+                                <label className="block font-bold mb-1 text-sm uppercase font-display dark:text-white">แท็ก</label>
+                                <TagInput
+                                    tags={formData.tags}
+                                    suggestions={allTags}
+                                    onChange={(newTags) => setFormData(prev => ({ ...prev, tags: newTags }))}
+                                />
                             </div>
                         </div>
 
