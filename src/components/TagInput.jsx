@@ -65,7 +65,7 @@ const TagInput = ({ tags = [], suggestions = [], onChange, placeholder = "พิ
     return (
         <div className="relative group">
             <div
-                className={`min-h-[48px] p-2 flex flex-wrap gap-2 border-3 border-black dark:border-white bg-white dark:bg-zinc-800 transition-all cursor-text ${isFocused ? 'shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] translate-x-[-1px] translate-y-[-1px]' : ''}`}
+                className={`neo-input min-h-[48px] p-2 flex flex-wrap gap-2 cursor-text active:translate-x-[2px] active:translate-y-[2px] relative ${isFocused ? '!bg-white dark:!bg-zinc-700 shadow-[4px_4px_0px_0px_#000] dark:shadow-[4px_4px_0px_0px_#fff]' : 'dark:!bg-zinc-800'}`}
                 onClick={() => inputRef.current?.focus()}
             >
                 {tags.map(tag => (

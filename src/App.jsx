@@ -726,8 +726,8 @@ export default function App() {
                         <div>
                             <label className="block font-bold mb-1 text-sm uppercase font-display dark:text-white">รูปภาพประกอบ</label>
                             {!imagePreview ? (
-                                <div className="border-3 border-dashed border-gray-300 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 p-6 flex flex-col items-center justify-center text-gray-500 dark:text-gray-400 hover:border-black dark:hover:border-white hover:bg-white dark:hover:bg-zinc-900 transition-all cursor-pointer relative">
-                                    <Upload size={32} className="mb-2" /><span className="text-xs font-bold">คลิกเพื่ออัปโหลด (Max 1MB)</span>
+                                <div className="border-3 border-dashed border-black dark:border-white bg-gray-50 dark:bg-zinc-800 p-6 flex flex-col items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-white dark:hover:bg-zinc-900 transition-all cursor-pointer relative neo-box-static shadow-[4px_4px_0px_0px_#000] dark:shadow-[4px_4px_0px_0px_#fff] hover:shadow-[2px_2px_0px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px]">
+                                    <Upload size={32} className="mb-2 text-black dark:text-white" /><span className="text-xs font-bold text-black dark:text-white">คลิกเพื่ออัปโหลด (Max 1MB)</span>
                                     <input type="file" accept="image/*" onChange={handleImageChange} className="absolute inset-0 opacity-0 cursor-pointer" />
                                 </div>
                             ) : (
