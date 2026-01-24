@@ -49,6 +49,11 @@ h6,
   box-shadow: var(--shadow-hard);
 }
 
+.dark .neo-box-static {
+  border-color: #fff;
+  box-shadow: 4px 4px 0px 0px #fff;
+}
+
 .neo-btn {
   border: 2px solid #000;
   background: #fff;
@@ -116,11 +121,11 @@ h6,
 }
 
 .dark ::-webkit-scrollbar-track {
-  background: #27272a;
+  background: #000;
   border-left: 2px solid #fff;
 }
 
 .dark ::-webkit-scrollbar-thumb {
   background: #fff;
-  border: 2px solid #27272a;
+  border: 2px solid #000;
 }

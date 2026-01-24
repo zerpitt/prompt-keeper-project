@@ -489,27 +489,36 @@ export default function App() {
 
     if (!user) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-[#f3f4f6] p-4 relative overflow-hidden">
+            <div className="min-h-screen flex items-center justify-center bg-[#f3f4f6] dark:bg-black p-4 relative overflow-hidden transition-colors">
                 {/* Background Pattern */}
-                <div className="absolute inset-0 z-0 opacity-[0.05]" style={{ backgroundImage: 'radial-gradient(#000 1.5px, transparent 1.5px)', backgroundSize: '24px 24px' }}></div>
-                <div className="absolute inset-0 z-0 opacity-[0.02]" style={{ backgroundImage: 'linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%, #000), linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%, #000)', backgroundSize: '40px 40px', backgroundPosition: '0 0, 20px 20px' }}></div>
-                <div className="neo-box-static bg-white p-8 max-w-md w-full relative z-10">
-                    <div className="bg-black text-white px-2 py-1 font-bold text-xs absolute -top-4 left-4 border-2 border-black font-display">
+                <div className="absolute inset-0 z-0 opacity-[0.05] dark:opacity-[0.1]" style={{ backgroundImage: 'radial-gradient(currentColor 1.5px, transparent 1.5px)', backgroundSize: '24px 24px', color: 'inherit' }}></div>
+                <div className="absolute inset-0 z-0 opacity-[0.02] dark:opacity-[0.05]" style={{ backgroundImage: 'linear-gradient(45deg, currentColor 25%, transparent 25%, transparent 75%, currentColor 75%, currentColor), linear-gradient(45deg, currentColor 25%, transparent 25%, transparent 75%, currentColor 75%, currentColor)', backgroundSize: '40px 40px', backgroundPosition: '0 0, 20px 20px', color: 'inherit' }}></div>
+
+                <div className="neo-box-static bg-white dark:bg-zinc-900 p-8 max-w-md w-full relative z-10 transition-colors">
+                    <div className="bg-black text-white dark:bg-white dark:text-black px-2 py-1 font-bold text-xs absolute -top-4 left-4 border-2 border-black dark:border-white font-display">
                         PROMPT.KEEPER_V.1.0
                     </div>
                     <div className="mb-8 text-center">
-                        <div className="w-16 h-16 bg-black text-white flex items-center justify-center mx-auto mb-4 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)]">
+                        <div className="w-16 h-16 bg-black text-white dark:bg-white dark:text-black flex items-center justify-center mx-auto mb-4 border-4 border-black dark:border-white shadow-[4px_4px_0px_0px_#000] dark:shadow-[4px_4px_0px_0px_#fff]">
                             <Terminal size={40} />
                         </div>
-                        <h1 className="text-4xl uppercase mb-2">PROMPT.KEEPER</h1>
-                        <p className="text-sm text-gray-600">จัดการคำสั่ง AI ของคุณ</p>
+                        <h1 className="text-4xl uppercase mb-2 dark:text-white">PROMPT.KEEPER</h1>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">จัดการคำสั่ง AI ของคุณ</p>
                     </div>
                     <div className="flex flex-col gap-3">
-                        <button onClick={handleGoogleLogin} className="w-full border-3 border-black p-4 flex items-center justify-center gap-3 font-bold hover:bg-black hover:text-white transition-all shadow-[4px_4px_0px_0px_#000] active:translate-x-1 active:translate-y-1 active:shadow-none bg-white font-display">
+                        <button onClick={handleGoogleLogin} className="w-full border-3 border-black dark:border-white p-4 flex items-center justify-center gap-3 font-bold hover:bg-black hover:text-white dark:text-white dark:hover:bg-white dark:hover:text-black transition-all shadow-[4px_4px_0px_0px_#000] dark:shadow-[4px_4px_0px_0px_#fff] active:translate-x-1 active:translate-y-1 active:shadow-none bg-white dark:bg-zinc-900 font-display">
                             เข้าสู่ระบบด้วย Google
                         </button>
-                        <button onClick={() => signInAnonymously(auth)} className="w-full border-3 border-black p-4 flex items-center justify-center gap-3 font-bold hover:bg-yellow-300 transition-all shadow-[4px_4px_0px_0px_#000] active:translate-x-1 active:translate-y-1 active:shadow-none bg-white font-display">
+                        <button onClick={() => signInAnonymously(auth)} className="w-full border-3 border-black dark:border-white p-4 flex items-center justify-center gap-3 font-bold hover:bg-yellow-300 dark:hover:bg-yellow-600 transition-all shadow-[4px_4px_0px_0px_#000] dark:shadow-[4px_4px_0px_0px_#fff] active:translate-x-1 active:translate-y-1 active:shadow-none bg-white dark:bg-zinc-900 dark:text-white font-display">
                             <User /> เข้าใช้งานแบบผู้เยี่ยมชม
+                        </button>
+
+                        {/* Theme Toggle for Login Page */}
+                        <button
+                            onClick={() => setIsDarkMode(!isDarkMode)}
+                            className="absolute top-4 right-4 p-2 text-gray-400 hover:text-black dark:text-gray-500 dark:hover:text-white transition-colors"
+                        >
+                            {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
                         </button>
                     </div>
                 </div>
@@ -837,7 +846,7 @@ export default function App() {
                                             <input
                                                 value={block.title}
                                                 onChange={(e) => updateWorkflowBlock(block.id, 'title', e.target.value)}
-                                                className="w-full font-bold border-b-2 border-gray-300 focus:border-black dark:border-zinc-700 dark:focus:border-white dark:text-white outline-none py-1 bg-transparent"
+                                                className="w-full neo-input py-2 text-sm font-bold"
                                                 placeholder={`ขั้นตอนที่ ${index + 1}`}
                                             />
                                         </div>

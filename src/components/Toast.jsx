@@ -31,7 +31,7 @@ const Toast = ({ message, type, onClose }) => {
     const style = variants[type] || variants.info;
 
     return (
-        <div className={`fixed bottom-6 right-6 z-[100] flex items-center gap-3 pr-12 pl-4 py-4 border-3 ${style.border} shadow-[6px_6px_0px_0px_#000] animate-in slide-in-from-right-full fade-in duration-300 ${style.bg}`}>
+        <div className={`fixed bottom-6 right-6 z-[100] flex items-center gap-3 pr-12 pl-4 py-4 border-3 ${style.border} shadow-[6px_6px_0px_0px_#000] dark:shadow-[6px_6px_0px_0px_#fff] animate-in slide-in-from-right-full fade-in duration-300 ${style.bg}`}>
             <div className="shrink-0">{style.icon}</div>
             <span className={`font-black font-display text-base ${style.text}`}>{message}</span>
             <button
